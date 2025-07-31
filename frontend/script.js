@@ -1,13 +1,14 @@
-const login= document.querySelector(".login")
+const login = document.querySelector(".login")
 const loginForm = document.querySelector(".login-form")
 const loginInput = document.querySelector(".login-input")
-const loginBtn = document.querySelector(".login-button")
 
-const chat= document.querySelector(".chat")
+const chat = document.querySelector(".chat")
 const chatForm = document.querySelector(".chat-form")
 const chatInput = document.querySelector(".chat-input")
 const chatMessage = document.querySelector(".chat-message")
-const user = {id:"", name:"", color:""}
+
+const user = { id: "", name: "", color: "" }
+
 const colors = [
     "aqua",
     "cadetblue",
@@ -17,51 +18,57 @@ const colors = [
     "darkkhaki",
     "hotpink",
     "gold",
-    "navy"]
+    "navy"
+]
 
-    let websocket
-    const createMessageSelfElement = ((content)=>{
-        const div = document.createElement("div")
-        div.classList.add("message-self")
-        div.innerHTML = content
-        return(div)
-    })
+let websocket
 
-        const createMessageOtherElement = ((content, sender, senderColor)=>{
-        const div = document.createElement("div")
-        const span = document.createElement("span")
-        div.classList.add("message-other")
-        span.classList.add("message-sender")
-        span.style.color = senderColor
-        div.appendChild(span)
-        span.innerHTML = sender
-        div.innerHTML += content
-        return(div)
-    })
+const createMessageSelfElement = (content) => {
+    const div = document.createElement("div")
 
+    div.classList.add("message-self")
+    div.innerHTML = content
 
-    const getRandomColor = () => {
+    return div
+}
+
+const createMessageOtherElement = (content, sender, senderColor) => {
+    const div = document.createElement("div")
+    const span = document.createElement("span")
+
+    div.classList.add("message-other")
+    span.classList.add("message-sender")
+    span.style.color = senderColor
+
+    div.appendChild(span)
+
+    span.innerHTML = sender
+    div.innerHTML += content
+
+    return div
+}
+
+const getRandomColor = () => {
     const randomIndex = Math.floor(Math.random() * colors.length)
     return colors[randomIndex]
 }
 
-const scrollScreen = (() =>{
+const scrollScreen = () => {
     window.scrollTo({
-        top:document.body.scrollHeight,
-        behavior:"smooth"
-
+        top: document.body.scrollHeight,
+        behavior: "smooth"
     })
-})
-
-
-const processMessage = ({ data }) => {
-  const {userId, userName, userColor, content} = JSON.parse(data)
-    const message = userId == user.id ? createMessageSelfElement(content) : createMessageOtherElement(content, userName, userColor)
-    const element = createMessageOtherElement(content, userName, userColor)
-    chatMessage.appendChild(message)
-    scrollScreen()
 }
 
+const processMessage = ({ data }) => {
+    const { userId, userName, userColor, content } = JSON.parse(data)
+
+    const message = userId == user.id ? createMessageSelfElement(content) : createMessageOtherElement(content, userName, userColor)
+
+    chatMessage.appendChild(message)
+
+    scrollScreen()
+}
 
 const handleSubmit = (event) => {
     event.preventDefault()
